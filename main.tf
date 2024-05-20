@@ -1,54 +1,22 @@
 # doormat aws tf-push --workspace tfe-ecs-setup --organization srahul3 --account 980777455695
-resource "aws_vpc" "tfe" {
-  cidr_block           = var.vpc_cidr
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "2.78.0"
+
+  name                 = tfe2
+  cidr                 = "10.0.0.0/16"
+  azs                  = data.aws_availability_zones.available.names
+  private_subnets      = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets       = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
   enable_dns_hostnames = true
-  tags = {
-    Name = "tfe"
-  }
-}
-resource "aws_subnet" "subnet" {
-  vpc_id                  = aws_vpc.tfe.id
-  cidr_block              = cidrsubnet(aws_vpc.tfe.cidr_block, 8, 1)
-  map_public_ip_on_launch = true
-  availability_zone       = var.availability_zones_1
-}
-
-resource "aws_subnet" "subnet2" {
-  vpc_id                  = aws_vpc.tfe.id
-  cidr_block              = cidrsubnet(aws_vpc.tfe.cidr_block, 8, 2)
-  map_public_ip_on_launch = true
-  availability_zone       = var.availability_zones_2
-}
-
-resource "aws_internet_gateway" "internet_gateway" {
-  vpc_id = aws_vpc.tfe.id
-  tags = {
-    Name = "internet_gateway"
-  }
-}
-
-resource "aws_route_table" "route_table" {
-  vpc_id = aws_vpc.tfe.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.internet_gateway.id
-  }
-}
-
-resource "aws_route_table_association" "subnet_route" {
-  subnet_id      = aws_subnet.subnet.id
-  route_table_id = aws_route_table.route_table.id
-}
-
-resource "aws_route_table_association" "subnet2_route" {
-  subnet_id      = aws_subnet.subnet2.id
-  route_table_id = aws_route_table.route_table.id
 }
 
 # setting up security group
 resource "aws_security_group" "security_group" {
   name   = "tfe-ecs-security-group"
-  vpc_id = aws_vpc.tfe.id
+  vpc_id = module.vpc.vpc_id
 
   ingress {
     from_port   = 0
@@ -110,7 +78,7 @@ resource "aws_ecs_service" "ecs_service" {
   launch_type         = "FARGATE"
 
   network_configuration {
-    subnets          = [aws_subnet.subnet.id, aws_subnet.subnet2.id]
+    subnets          = module.vpc.public_subnets
     security_groups  = [aws_security_group.security_group.id]
     assign_public_ip = false
   }
