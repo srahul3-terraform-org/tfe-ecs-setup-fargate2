@@ -1,2 +1,2 @@
 #!/bin/bash
-echo ECS_CLUSTER=my-ecs-cluster >> /etc/ecs/ecs.config
+echo ECS_CLUSTER=tfe-agent-ecs-cluster >> /etc/ecs/ecs.config
