@@ -60,6 +60,15 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       memory    = 512
       essential = true
     }
+    logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+            awslogs-create-group = true,
+            awslogs-group = "demo-cw",
+            awslogs-region = "us-west-2",
+            awslogs-stream-prefix = "tfe-agent"
+        }
+    }
   ])
 }
 
