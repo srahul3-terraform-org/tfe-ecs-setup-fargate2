@@ -55,17 +55,10 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   container_definitions = jsonencode([
     {
       name      = "tfe-agent"
-      image     = "amazon/amazon-ecs-agent"
+      image     = "alpine/git"
       cpu       = 256
       memory    = 512
       essential = true
-      portMappings = [
-        {
-          containerPort = 80
-          hostPort      = 80
-          protocol      = "tcp"
-        }
-      ]
     }
   ])
 }
