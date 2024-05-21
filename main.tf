@@ -46,13 +46,13 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 256
   memory                   = 512
-  # execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = "arn:aws:iam::980777455695:role/ecsTaskExecutionRole"
   # task_role_arn            = aws_iam_role.ecs_task_role.arn
   # runtime_platform {
   #   operating_system_family = "LINUX"
   #   cpu_architecture        = "X86_64"
   # }
- # log_configuration        = local.example_client_app_log_config  
+ log_configuration        = local.example_client_app_log_config  
  container_definitions = jsonencode([
     {
       name      = "tfe-agent"
