@@ -52,7 +52,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   #   operating_system_family = "LINUX"
   #   cpu_architecture        = "X86_64"
   # }
- log_configuration        = local.example_client_app_log_config  
+ # log_configuration        = local.example_client_app_log_config  
  container_definitions = jsonencode([
     {
       name      = "tfe-agent"
@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       memory    = 512
       essential = true
       essential        = true
-      # logConfiguration = local.example_client_app_log_config
+      logConfiguration = local.example_client_app_log_config
     }
   ])
 }
