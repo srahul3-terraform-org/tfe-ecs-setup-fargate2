@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       memory    = 512
       essential = true
       essential        = true
-      logConfiguration = local.example_client_app_log_config
+      # logConfiguration = local.example_client_app_log_config
     }
   ])
 }
