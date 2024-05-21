@@ -52,13 +52,16 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   #   operating_system_family = "LINUX"
   #   cpu_architecture        = "X86_64"
   # }
-  container_definitions = jsonencode([
+ log_configuration        = local.example_client_app_log_config  
+ container_definitions = jsonencode([
     {
       name      = "tfe-agent"
       image     = "alpine/git"
       cpu       = 256
       memory    = 512
       essential = true
+      essential        = true
+      logConfiguration = local.example_client_app_log_config
     }
   ])
 }
@@ -74,5 +77,16 @@ resource "aws_ecs_service" "ecs_service" {
     subnets          = module.vpc.public_subnets
     security_groups  = [aws_security_group.security_group.id]
     assign_public_ip = false
+  }
+}
+
+locals {
+  example_client_app_log_config = {
+    logDriver = "awslogs"
+    options = {
+      awslogs-group         = "demo-cw"
+      awslogs-region        = "us-west-2"
+      awslogs-stream-prefix = "tfe-agent"
+    }
   }
 }
