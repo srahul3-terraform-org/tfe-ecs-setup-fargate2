@@ -62,6 +62,16 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       essential = true
       essential        = true
       logConfiguration = local.example_client_app_log_config
+      environment = [
+        {
+          name = "TFC_ADDRESS"
+          value = "https://app.terraform.io"
+        },
+        {
+          name = "TFC_AGENT_TOKEN"
+          value = "fake-token"
+        },
+      ]
     }
   ])
 }
