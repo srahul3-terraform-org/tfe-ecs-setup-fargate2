@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
  container_definitions = jsonencode([
     {
       name      = "tfe-agent"
-      image     = "alpine/git"
+      image     = "hashicorp/tfc-agent:latest"
       cpu       = 256
       memory    = 512
       essential = true
